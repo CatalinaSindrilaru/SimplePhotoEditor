@@ -1,0 +1,82 @@
+// Copyright Sindrilaru Catalina-Maria 312CA
+
+--------------------------------------------------------------------------
+
+Programul prelucreaza poze in tonuri de gri, dar si color, iar pentru a le
+stoca si modifica, am folosit doua matrici ( --image-- pentru imaginea in
+tonuri de gri si --rgb_image-- pentru cea color). Cea de-a doua matrice este
+o matrice de structuri, pentru a putea retine in acelasi timp valorile
+pixelilor pentru rosu, verde, albastru. De altfel, am retinut in variabile
+separate tipul imaginii, dimensiunile acesteia, valorea maxima a unui pixel.
+
+---------------------------------------------------------------------------
+
+In programul principal am citit fiecare comanda in parte si am apelat functia
+corespunzatoare daca aceasta era valida.
+
+--> Comanda LOAD <fisier> stocheaza tipul imaginii, dimensiunile si valoarea
+maxima a unui pixel, precum si matricea de pixeli. Pentru a face asta, am
+deschis fisierul in format text, am citit tipul imaginii, iar apoi am apelat
+o alta functie specifica pentru fiecare tip in parte. In cadrul acestora, am
+citit pentru fiecare in parte dimensiunile si valoarea maxima din format text,
+inchizand si deschizand fisierul in format binar daca tipul era P4 sau P6,
+pentru a citi matricea. Anterior, am creat functii pentru alocarea dinamica a
+matricilor image si rgb_image, dar si pentru citirea acestora, atat din format
+text, cat si din binar.
+
+--> Comanda SELECT poate primi argumente precum ALL, prin care se seteaza
+selectia curenta la dimensiunile imaginii sau <x1> <y1> <x2> <y2> care schimba
+selectia curenta doar daca datele introduse sunt valide.
+
+--> Comanda ROTATE <unghi> roteste imaginea la stanga sau la dreapta cu unghiul
+dat. Am creeat doua functii principale, una pentru a roti o imagine in tonuri
+de gri si una pentru a roti o imagine color. Pentru fiecare dintre ele am
+creeat functii specifice pentru a roti cu 90 de grade toata imaginea la dreapta
+/stanga sau pentru a roti o sectiune patratica la dreapta/stanga. Pentru rotirea
+cu 180 sau 270 de grade, am apelat aceeasi functie de 2, respectiv 3 ori.
+
+		> In cazul rotirii intregii imagini, am alocat dinamic o matrice
+		auxiliara in care am copiat matricea initiala. Am rotit la dreapta
+		sau la stanga matricea auxiliara, apoi am eliberat memoria pentru
+		matricea initiala si am copiat in ea matricea rotita. Am interschimbat
+		numarul de linii si de coloane ale matricei si am actualizat selectia
+		curenta la dimensiunile imaginii actuale.
+
+		> In cazul rotirii unei sectiuni am creat o matrice auxiliara in care
+		am copiat doar valorile din acea sectiune din matricea initiala. Am
+		rotit la dreapta/stanga matricea auxiliara, iar apoi am copiat doar
+		acele valori schimbate in matrice.
+
+--> Comanda CROP taie imaginea in functie de selectia curenta. Am folosit
+doua functii, pentru imaginea in tonuri de gri si pentru imaginea color.
+In ambele am stocat valorile din selectie intr-o matrice auxiliara alocata
+dinamic, apoi am eliberat memoria pentru matricea initiala si am copiat
+noua matrice. Am actualizat atat dimensiunile matricei, cat si selectia
+curenta.
+
+--> Comanda APPLY <filtru> aplica filtrul peste selectia curenta, dar nu pe
+marginile imaginii. Am creeat o functie principala in care am verificat
+daca filtrul se poate aplica, iar in caz afirmativ am apelat functia
+corespunzatoare pentru fiecare filtru in parte. Aplicarea filtrelor este
+similara, difera doar matricea de referinta. Pentru aplicare, am copiat
+valorile initiale intr-o matrice auxiliara. Apoi am parcurs sectiunea
+curenta din matricea initiala si am inmultit valorile pixelilor din
+veccinatatea pixelului pe care vreau sa il modific cu valorile de pe aceeasi
+pozitie din matricea filtru, adunandu-le. Valorea pixelului schimbat a devenit
+suma.
+
+--> Comanda SAVE <fisier> |ascii| salveaza matricea curenta impreuna cu tipul
+si dimensiunile acesteia in fisierul dat. Am folosit o functie principala, in
+care verific tipul imaginii, in tonuri de gri sau color, precum si daca
+imaginea trebuie salvata in format text sau binar, pentru fiecare apeland
+o functie diferita. Caracteristicile pentru fiecare imagine le scriu in format
+text, iar daca imaginea trebuie salvata in binar, inchid fisierul si il deschizand
+pentru scriere in format binar. Pentru a putea salva valoarea unui pixel, o rotunjesc 
+si o transform in tipul de date int, deoarece calculele pe parcurs le-am realizat
+lucrand cu tipul double, pentru a putea minimiza eroarea cauzata de aplicarea
+filtrelor.
+
+--> Comanda EXIT elibereaza memoria si incheie programul.
+
+--> O comanda ce nu se regaseste printre cele enumerate mai sus, se considera
+invalida si se ignora.
